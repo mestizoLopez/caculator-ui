@@ -1,59 +1,123 @@
-# CalculatorUi
+# Calculator UI – Angular Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.15.
+## Overview
+This is the Angular frontend for the Calculator application.  
+It communicates with the Spring Boot backend over REST and supports authentication via JWT.
 
-## Development server
+The UI allows users to register, log in, perform calculator operations, and view/delete their operation history.
 
-To start a local development server, run:
+---
 
+## Features
+- **Register** a new account
+- **Login** with JWT-based authentication
+- **Perform operations** (Addition, Subtraction, Multiplication, Division, Square Root, Random String)
+- **View history** of performed operations
+- **Delete records** (soft delete)
+- **Material UI** styling
+
+---
+
+## Project Structure
+```
+src/
+│
+├── app/
+│   ├── core/            # Services, interceptors
+│   ├── auth/            # Login/Register components
+│   ├── operations/      # Create and perform operations
+│   ├── records/         # Record list & delete
+│   ├── shared/          # Shared services and models
+│   └── app.routes.ts    # Routing configuration
+│
+├── assets/              # Static assets
+├── environments/        # Environment config
+└── main.ts              # Application bootstrap
+```
+
+---
+
+## Authentication Flow
+1. **Register** via `/auth/register` page → API: `/api/v1/auth/register`
+2. **Login** via `/auth/login` page → API: `/api/v1/auth/login`  
+   - JWT token is saved in `localStorage`
+3. **HttpInterceptor** attaches `Authorization: Bearer <token>` to all secured requests
+4. If token expires, user is redirected to login
+
+---
+
+## API Integration
+The frontend expects the backend running at the URL set in `src/environments/environment.ts`:
+```ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8080/api/v1'
+};
+```
+
+---
+
+## Setup & Running
+
+### Prerequisites
+- Node.js (LTS recommended)
+- Angular CLI
+
+### Install dependencies
+```bash
+npm install
+```
+
+### Run dev server
 ```bash
 ng serve
 ```
+The app will be available at `http://localhost:4200`.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## Components
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Auth
+- **RegisterComponent**: Form to create account
+- **LoginComponent**: Form to login and save JWT token
 
+### Operations
+- **CreateOperationComponent**: Create new operation type (admin use)
+- **OperationComponent**: Perform an operation and view result
+
+### Records
+- **RecordListComponent**: Paginated list of user operations
+- **Delete** button calls API to soft delete
+
+---
+
+## Material UI
+- Angular Material components are used for inputs, tables, buttons
+- Installed via:
 ```bash
-ng generate component component-name
+ng add @angular/material
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
+## Example `.env` (environment.ts)
+```ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8080/api/v1'
+};
 ```
 
-## Building
+---
 
-To build the project run:
+## CORS
+Ensure backend allows CORS from `http://localhost:4200` for all required endpoints.
 
-```bash
-ng build
-```
+---
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Troubleshooting
+- **401 Unauthorized**: Ensure token is in localStorage and HttpInterceptor is active
+- **CORS errors**: Check backend CORS configuration in `SecurityConfig`
+- **H2 data reset**: Register/login again if backend restarts
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

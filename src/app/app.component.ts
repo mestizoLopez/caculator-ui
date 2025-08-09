@@ -1,12 +1,27 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { AuthService } from './core/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  template: `
+    <nav>
+      <a routerLink="/">Operations</a>
+      <a routerLink="/records">Records</a>
+      <a routerLink="/operations/create" *ngIf="auth.isAuthenticated()">Create Operation</a>
+      <span style="flex:1"></span>
+      <a routerLink="/login" *ngIf="!auth.isAuthenticated()">Login</a>
+      <a routerLink="/register" *ngIf="!auth.isAuthenticated()">Register</a>
+      <button *ngIf="auth.isAuthenticated()" (click)="auth.logout()">Logout</button>
+    </nav>
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
+  `
 })
 export class AppComponent {
-  title = 'calculator-ui';
+  constructor(public auth: AuthService) {}
 }
