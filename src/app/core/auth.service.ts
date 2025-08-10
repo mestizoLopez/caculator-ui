@@ -9,11 +9,11 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   register(username: string, password: string) {
-    return this.http.post(`http://localhost:8080/api/v1/auth/register`, { username, password });
+    return this.http.post(`https://calculator-mestizoftware-b8895119c8c6.herokuapp.com/api/v1/auth/register`, { username, password });
   }
 
   login(username: string, password: string) {
-    return this.http.post<{ token: string }>(`http://localhost:8080/api/v1/auth/login`, { username, password })
+    return this.http.post<{ token: string }>(`https://calculator-mestizoftware-b8895119c8c6.herokuapp.com/api/v1/auth/login`, { username, password })
       .pipe(tap(res => {
         const token = res?.token; // adjust if backend uses a different key
         if (token) localStorage.setItem(this.tokenKey, token);

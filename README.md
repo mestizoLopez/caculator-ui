@@ -1,53 +1,45 @@
-# Calculator UI – Angular Frontend
+# Frontend - Calculator App (Angular)
 
-## Overview
-This is the Angular frontend for the Calculator application.  
-It communicates with the Spring Boot backend over REST and supports authentication via JWT.
-
-The UI allows users to register, log in, perform calculator operations, and view/delete their operation history.
-
----
-
-## Features
-- **Register** a new account
-- **Login** with JWT-based authentication
-- **Perform operations** (Addition, Subtraction, Multiplication, Division, Square Root, Random String)
-- **View history** of performed operations
-- **Delete records** (soft delete)
-- **Material UI** styling
+This is the **Angular frontend** for the Calculator application.  
+It connects to the backend (Spring Boot, JWT-secured) and allows users to:
+- Register and log in
+- Perform mathematical operations (addition, subtraction, multiplication, division, square root, random string)
+- View and manage their operation history (records)
 
 ---
 
-## Project Structure
+## 📦 Tech Stack
+- Angular (latest)
+- Angular Material (UI components)
+- JWT Authentication
+- Reactive Forms
+- TypeScript
+
+---
+
+## 📂 Project Structure
 ```
 src/
-│
-├── app/
-│   ├── core/            # Services, interceptors
-│   ├── auth/            # Login/Register components
-│   ├── operations/      # Create and perform operations
-│   ├── records/         # Record list & delete
-│   ├── shared/          # Shared services and models
-│   └── app.routes.ts    # Routing configuration
-│
-├── assets/              # Static assets
-├── environments/        # Environment config
-└── main.ts              # Application bootstrap
+  app/
+    core/            -> Core services (AuthService, AuthInterceptor, guards)
+    auth/            -> Login & Register components
+    operations/      -> Components for performing operations
+    records/         -> Components for viewing/deleting operation records
+    shared/          -> Shared UI components & models
+  assets/            -> Static assets
+  environments/      -> Environment configs (dev/prod API URLs)
 ```
 
 ---
 
-## Authentication Flow
-1. **Register** via `/auth/register` page → API: `/api/v1/auth/register`
-2. **Login** via `/auth/login` page → API: `/api/v1/auth/login`  
-   - JWT token is saved in `localStorage`
-3. **HttpInterceptor** attaches `Authorization: Bearer <token>` to all secured requests
-4. If token expires, user is redirected to login
+## ⚙️ Environment Configuration
+API endpoints are configured in:
+```
+src/environments/environment.ts
+src/environments/environment.prod.ts
+```
 
----
-
-## API Integration
-The frontend expects the backend running at the URL set in `src/environments/environment.ts`:
+Example:
 ```ts
 export const environment = {
   production: false,
@@ -57,67 +49,45 @@ export const environment = {
 
 ---
 
-## Setup & Running
+## 🚀 Development Setup
 
-### Prerequisites
-- Node.js (LTS recommended)
-- Angular CLI
-
-### Install dependencies
+1️⃣ **Install dependencies**
 ```bash
 npm install
 ```
 
-### Run dev server
+2️⃣ **Run in development mode**
 ```bash
 ng serve
 ```
-The app will be available at `http://localhost:4200`.
+Frontend will be available at:  
+➡️ `http://calculator-ui.s3-website-us-east-1.amazonaws.com/`
 
 ---
 
-## Components
-
-### Auth
-- **RegisterComponent**: Form to create account
-- **LoginComponent**: Form to login and save JWT token
-
-### Operations
-- **CreateOperationComponent**: Create new operation type (admin use)
-- **OperationComponent**: Perform an operation and view result
-
-### Records
-- **RecordListComponent**: Paginated list of user operations
-- **Delete** button calls API to soft delete
-
----
-
-## Material UI
-- Angular Material components are used for inputs, tables, buttons
-- Installed via:
+## 🛠 Building for Production
 ```bash
-ng add @angular/material
+ng build --configuration production
 ```
+Output will be in the `dist/` folder.
 
 ---
 
-## Example `.env` (environment.ts)
-```ts
-export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:8080/api/v1'
-};
-```
+## 🔐 Authentication
+- The frontend authenticates against the backend using **JWT tokens**.
+- After login, the token is stored in `localStorage`.
+- `AuthInterceptor` automatically adds the `Authorization: Bearer <token>` header to every request.
 
 ---
 
-## CORS
-Ensure backend allows CORS from `http://localhost:4200` for all required endpoints.
+## 📡 API Integration
+The frontend communicates with the backend API via HTTP calls using Angular's `HttpClient`.  
+Endpoints (example):
+- `POST /auth/register` - Create account
+- `POST /auth/login` - Authenticate and get JWT
+- `GET /operations` - List operations
+- `POST /operations/perform` - Perform an operation
+- `GET /records` - Get user records
+- `DELETE /records/{id}` - Delete a record
 
 ---
-
-## Troubleshooting
-- **401 Unauthorized**: Ensure token is in localStorage and HttpInterceptor is active
-- **CORS errors**: Check backend CORS configuration in `SecurityConfig`
-- **H2 data reset**: Register/login again if backend restarts
-
